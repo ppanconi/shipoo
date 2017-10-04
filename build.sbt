@@ -1,52 +1,58 @@
-organization in ThisBuild := "sample.helloworld"
+organization in ThisBuild := "com.example"
+version in ThisBuild := "1.0-SNAPSHOT"
 
 // the Scala version that will be used for cross-compiled libraries
 scalaVersion in ThisBuild := "2.11.8"
 
-// SCALA SUPPORT: Remove the line below
-EclipseKeys.projectFlavor in Global := EclipseProjectFlavor.Java
+lazy val `shipoo` = (project in file("."))
+  .aggregate(`shipoo-api`, `shipoo-impl`, `shipoo-stream-api`, `shipoo-stream-impl`)
 
-lazy val helloworldApi = project("helloworld-api")
+lazy val `shipoo-api` = (project in file("shipoo-api"))
+  .settings(common: _*)
   .settings(
-    version := "1.0-SNAPSHOT",
-    libraryDependencies += lagomJavadslApi
+    libraryDependencies ++= Seq(
+      lagomJavadslApi,
+      lombok
+    )
   )
 
-lazy val helloworldImpl = project("helloworld-impl")
+lazy val `shipoo-impl` = (project in file("shipoo-impl"))
   .enablePlugins(LagomJava)
+  .settings(common: _*)
   .settings(
-    version := "1.0-SNAPSHOT",
     libraryDependencies ++= Seq(
       lagomJavadslPersistenceCassandra,
-      lagomJavadslTestKit
+      lagomJavadslKafkaBroker,
+      lagomJavadslTestKit,
+      lombok
     )
   )
   .settings(lagomForkedTestSettings: _*)
-  .dependsOn(helloworldApi)
+  .dependsOn(`shipoo-api`)
 
-lazy val hellostreamApi = project("hellostream-api")
-  .settings(version := "1.0-SNAPSHOT")
+lazy val `shipoo-stream-api` = (project in file("shipoo-stream-api"))
+  .settings(common: _*)
   .settings(
-    libraryDependencies += lagomJavadslApi
+    libraryDependencies ++= Seq(
+      lagomJavadslApi
+    )
   )
 
-lazy val hellostreamImpl = project("hellostream-impl")
-  .settings(version := "1.0-SNAPSHOT")
+lazy val `shipoo-stream-impl` = (project in file("shipoo-stream-impl"))
   .enablePlugins(LagomJava)
-  .dependsOn(hellostreamApi, helloworldApi)
+  .settings(common: _*)
   .settings(
-    libraryDependencies += lagomJavadslTestKit
+    libraryDependencies ++= Seq(
+      lagomJavadslPersistenceCassandra,
+      lagomJavadslKafkaClient,
+      lagomJavadslTestKit
+    )
   )
+  .dependsOn(`shipoo-stream-api`, `shipoo-api`)
 
-def project(id: String) = Project(id, base = file(id))
-  .settings(javacOptions in compile ++= Seq("-encoding", "UTF-8", "-source", "1.8", "-target", "1.8", "-Xlint:unchecked", "-Xlint:deprecation"))
-  .settings(jacksonParameterNamesJavacSettings: _*) // applying it to every project even if not strictly needed.
+val lombok = "org.projectlombok" % "lombok" % "1.16.10"
 
-
-// See https://github.com/FasterXML/jackson-module-parameter-names
-lazy val jacksonParameterNamesJavacSettings = Seq(
+def common = Seq(
   javacOptions in compile += "-parameters"
 )
 
-
-fork in run := true
