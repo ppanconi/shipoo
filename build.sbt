@@ -1,11 +1,11 @@
-organization in ThisBuild := "com.example"
+organization in ThisBuild := "com.shipoo"
 version in ThisBuild := "1.0-SNAPSHOT"
 
 // the Scala version that will be used for cross-compiled libraries
 scalaVersion in ThisBuild := "2.11.8"
 
 lazy val `shipoo` = (project in file("."))
-  .aggregate(`shipoo-api`, `shipoo-impl`, `shipoo-stream-api`, `shipoo-stream-impl`)
+  .aggregate(`shipoo-api`, `shipoo-impl`, `shipoo-stream-api`, `shipoo-stream-impl`, `shipoo-ui`)
 
 lazy val `shipoo-api` = (project in file("shipoo-api"))
   .settings(common: _*)
@@ -49,6 +49,18 @@ lazy val `shipoo-stream-impl` = (project in file("shipoo-stream-impl"))
     )
   )
   .dependsOn(`shipoo-stream-api`, `shipoo-api`)
+
+lazy val `shipoo-ui` = (project in file("shipoo-ui"))
+  .enablePlugins(PlayJava && LagomPlay)
+  .disablePlugins(PlayLayoutPlugin)
+  .settings(common: _*)
+  .settings(
+    libraryDependencies ++= Seq(
+      lagomJavadslClient
+    ),
+    PlayKeys.playMonitoredFiles ++= (sourceDirectories in (Compile, TwirlKeys.compileTemplates)).value
+  )
+
 
 val lombok = "org.projectlombok" % "lombok" % "1.16.10"
 
