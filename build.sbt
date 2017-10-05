@@ -34,8 +34,7 @@ lazy val `shipoo-stream-api` = (project in file("shipoo-stream-api"))
   .settings(common: _*)
   .settings(
     libraryDependencies ++= Seq(
-      lagomJavadslApi,
-
+      lagomJavadslApi
     )
   )
 

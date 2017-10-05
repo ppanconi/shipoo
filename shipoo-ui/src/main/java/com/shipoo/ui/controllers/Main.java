@@ -1,9 +1,20 @@
 package com.shipoo.ui.controllers;
 
+import com.example.hello.api.ShipooService;
 import play.mvc.Controller;
 import play.mvc.Result;
 
+import javax.inject.Inject;
+import java.util.concurrent.CompletionStage;
+
 public class Main extends Controller {
+
+    private final ShipooService shipooService;
+
+    @Inject
+    public Main(ShipooService shipooService) {
+        this.shipooService = shipooService;
+    }
 
     /**
      * An action that renders an HTML page with a welcome message.
@@ -11,8 +22,11 @@ public class Main extends Controller {
      * this method will be called when the application receives a
      * <code>GET</code> request with a path of <code>/</code>.
      */
-    public Result index() {
-        return ok(views.html.index.render());
+    public CompletionStage<Result> index() {
+
+        return shipooService.hello("Dear User").invoke().thenApply( m ->
+            ok(views.html.index.render(m))
+        );
     }
 
 }
