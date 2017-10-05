@@ -34,7 +34,8 @@ lazy val `shipoo-stream-api` = (project in file("shipoo-stream-api"))
   .settings(common: _*)
   .settings(
     libraryDependencies ++= Seq(
-      lagomJavadslApi
+      lagomJavadslApi,
+
     )
   )
 
@@ -53,6 +54,7 @@ lazy val `shipoo-stream-impl` = (project in file("shipoo-stream-impl"))
 lazy val `shipoo-ui` = (project in file("shipoo-ui"))
   .enablePlugins(PlayJava && LagomPlay)
   .disablePlugins(PlayLayoutPlugin)
+  .dependsOn(`shipoo-api`)
   .settings(common: _*)
   .settings(
     libraryDependencies ++= Seq(

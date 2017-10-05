@@ -1,0 +1,2 @@
+
+GET         /                                       com.shipoo.ui.controllers.Main.index
