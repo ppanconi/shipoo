@@ -1,2 +1,4 @@
 
 GET         /                                       com.shipoo.ui.controllers.Main.index
+
+GET         /assets/*file                           controllers.Assets.at(path = "/public", file)
