@@ -1,4 +1,4 @@
-Vue.component('navbaar', {
+Vue.component('navbar', {
     template: `
         <nav class="navbar" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
