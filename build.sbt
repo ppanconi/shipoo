@@ -58,8 +58,13 @@ lazy val `shipoo-ui` = (project in file("shipoo-ui"))
   .settings(
     libraryDependencies ++= Seq(
       lagomJavadslClient,
-      "org.pac4j" % "play-pac4j" % "4.0.0",
-      "org.pac4j" % "pac4j-oauth" % "2.1.0"
+      "org.pac4j" % "play-pac4j" % "3.0.1",
+      "org.pac4j" % "pac4j-http" % "2.0.0",
+      cache,
+      "org.pac4j" % "pac4j-openid" % "2.0.0" exclude("xml-apis" , "xml-apis"),
+      "org.pac4j" % "pac4j-oauth" % "2.0.0",
+      "org.pac4j" % "pac4j-oidc" % "2.0.0" exclude("commons-io" , "commons-io"),
+      "org.pac4j" % "pac4j-jwt" % "2.0.0" exclude("commons-io" , "commons-io")
     ),
     PlayKeys.playMonitoredFiles ++= (sourceDirectories in (Compile, TwirlKeys.compileTemplates)).value
   )
