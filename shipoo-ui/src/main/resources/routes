@@ -1,4 +1,8 @@
 
 GET         /                                       com.shipoo.ui.controllers.Main.index
+GET         /app.html                               com.shipoo.ui.controllers.Main.app
 
 GET         /assets/*file                           controllers.Assets.at(path = "/public", file)
+
+GET         /callback                         @org.pac4j.play.CallbackController.callback()
+POST        /callback                         @org.pac4j.play.CallbackController.callback()

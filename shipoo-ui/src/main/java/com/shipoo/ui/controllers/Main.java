@@ -1,6 +1,7 @@
 package com.shipoo.ui.controllers;
 
 import com.example.hello.api.ShipooService;
+import org.pac4j.play.java.Secure;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -16,6 +17,8 @@ public class Main extends Controller {
         this.shipooService = shipooService;
     }
 
+
+
     /**
      * An action that renders an HTML page with a welcome message.
      * The configuration in the <code>routes</code> file means that
@@ -26,6 +29,14 @@ public class Main extends Controller {
 
         return shipooService.hello("Dear User").invoke().thenApply( m ->
             ok(views.html.index.render(m))
+        );
+    }
+
+    @Secure(clients = "OidcClient")
+    public CompletionStage<Result> app() {
+
+        return shipooService.hello("Dear User").invoke().thenApply( m ->
+                ok(views.html.app.render(m))
         );
     }
 

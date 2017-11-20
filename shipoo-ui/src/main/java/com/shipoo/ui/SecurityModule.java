@@ -12,8 +12,6 @@ import org.pac4j.http.client.direct.ParameterClient;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator;
-import org.pac4j.oauth.client.FacebookClient;
-import org.pac4j.oauth.client.TwitterClient;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.play.CallbackController;
@@ -59,13 +57,13 @@ public class SecurityModule extends AbstractModule {
         bind(PlaySessionStore.class).toInstance(playCacheSessionStore);
         //bind(PlaySessionStore.class).to(PlayCacheSessionStore.class);
 
-        final String fbId = configuration.getString("fbId");
-        final String fbSecret = configuration.getString("fbSecret");
+//        final String fbId = configuration.getString("fbId");
+//        final String fbSecret = configuration.getString("fbSecret");
         final String baseUrl = configuration.getString("baseUrl");
-
-        // OAuth
-        final FacebookClient facebookClient = new FacebookClient(fbId, fbSecret);
-        final TwitterClient twitterClient = new TwitterClient("HVSQGAw2XmiwcKOTvZFbQ", "FSiO9G9VRR4KCuksky0kgGuo8gAVndYymr4Nl7qc8AA");
+//
+//        // OAuth
+//        final FacebookClient facebookClient = new FacebookClient(fbId, fbSecret);
+//        final TwitterClient twitterClient = new TwitterClient("HVSQGAw2XmiwcKOTvZFbQ", "FSiO9G9VRR4KCuksky0kgGuo8gAVndYymr4Nl7qc8AA");
         // HTTP
 //        final FormClient formClient = new FormClient(baseUrl + "/loginForm", new SimpleTestUsernamePasswordAuthenticator());
 //        final IndirectBasicAuthClient indirectBasicAuthClient = new IndirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
@@ -89,8 +87,10 @@ public class SecurityModule extends AbstractModule {
 
         // OpenID Connect
         final OidcConfiguration oidcConfiguration = new OidcConfiguration();
-        oidcConfiguration.setClientId("343992089165-i1es0qvej18asl33mvlbeq750i3ko32k.apps.googleusercontent.com");
-        oidcConfiguration.setSecret("unXK_RSCbCXLTic2JACTiAo9");
+//        oidcConfiguration.setClientId("343992089165-i1es0qvej18asl33mvlbeq750i3ko32k.apps.googleusercontent.com");
+        oidcConfiguration.setClientId("176243423045-ug628noqfdh5hes1elebcnpsbvhqbdhc.apps.googleusercontent.com");
+//        oidcConfiguration.setSecret("unXK_RSCbCXLTic2JACTiAo9");
+        oidcConfiguration.setSecret("-8oiR_dTMRaxoHN47HIxEBDV");
         oidcConfiguration.setDiscoveryURI("https://accounts.google.com/.well-known/openid-configuration");
         oidcConfiguration.addCustomParam("prompt", "consent");
         final OidcClient oidcClient = new OidcClient(oidcConfiguration);
@@ -105,7 +105,8 @@ public class SecurityModule extends AbstractModule {
         // basic auth
         final DirectBasicAuthClient directBasicAuthClient = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
 
-        final Clients clients = new Clients(baseUrl + "/callback", facebookClient, twitterClient,
+        final Clients clients = new Clients(baseUrl + "/callback"
+//                , facebookClient, twitterClient,
 //                formClient, indirectBasicAuthClient, casClient, saml2Client
                 , oidcClient, parameterClient, directBasicAuthClient,
                 new AnonymousClient()
@@ -114,7 +115,7 @@ public class SecurityModule extends AbstractModule {
 
         final Config config = new Config(clients);
         config.addAuthorizer("admin", new RequireAnyRoleAuthorizer<>("ROLE_ADMIN"));
-        config.addAuthorizer("custom", new CustomAuthorizer());
+//        config.addAuthorizer("custom", new CustomAuthorizer());
         config.setHttpActionAdapter(new DefaultHttpActionAdapter());
         bind(Config.class).toInstance(config);
 
