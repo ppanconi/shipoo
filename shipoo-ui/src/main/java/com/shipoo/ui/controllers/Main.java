@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-@With(Main.Profile.class)
+@With(GetProfileAction.class)
 public class Main extends Controller {
 
     private final ShipooService shipooService;
@@ -23,20 +23,6 @@ public class Main extends Controller {
     public Main(ShipooService shipooService, PlaySessionStore playSessionStore) {
         this.shipooService = shipooService;
         this.playSessionStore = playSessionStore;
-    }
-
-    public class Profile extends Action.Simple {
-        @Override
-        public CompletionStage<Result> call(Http.Context ctx) {
-            ctx.args.put("profile", profile());
-            return delegate.call(ctx);
-        }
-
-        public CommonProfile profile() {
-            final PlayWebContext context = new PlayWebContext(ctx(), playSessionStore);
-            final ProfileManager<CommonProfile> profileManager = new ProfileManager(context);
-            return profileManager.getAll(false).get(0);
-        }
     }
 
     /**

@@ -32,8 +32,9 @@
         <script src="https://unpkg.com/vue-router"></script>
 
         @*custom js*@
-
-        <script type="text/javascript" src="@routes.Assets.at("js/navbar-cmp.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.at("js/app.js")"></script>
+        @if(! ctx().args.get("profile").asInstanceOf[org.pac4j.core.profile.CommonProfile].getId().equals("anonymous") ) {
+            <script type="text/javascript" src="@routes.Assets.at("js/navbar-cmp.js")"></script>
+            <script type="text/javascript" src="@routes.Assets.at("js/app.js")"></script>
+        }
     </body>
 </html>
