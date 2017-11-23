@@ -1,6 +1,10 @@
 
-GET         /                                       com.shipoo.ui.controllers.Main.index
-GET         /app.html                               com.shipoo.ui.controllers.Main.app
+GET         /anonymous.html                           com.shipoo.ui.controllers.Main.anonymous
+
+GET         /                                         com.shipoo.ui.controllers.Main.index(path = "")
+GET         /*path                                    com.shipoo.ui.controllers.Main.index(path)
+#GET         /ui/*path                                com.shipoo.ui.controllers.Main.index
+
 
 GET         /assets/*file                           controllers.Assets.at(path = "/public", file)
 

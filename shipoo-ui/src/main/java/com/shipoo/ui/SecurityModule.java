@@ -3,7 +3,6 @@ package com.shipoo.ui;
 //import be.objectify.deadbolt.java.cache.HandlerCache;
 
 import com.google.inject.AbstractModule;
-import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.client.direct.AnonymousClient;
 import org.pac4j.core.config.Config;
@@ -17,7 +16,6 @@ import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.play.CallbackController;
 import org.pac4j.play.LogoutController;
 import org.pac4j.play.deadbolt2.Pac4jRoleHandler;
-import org.pac4j.play.http.DefaultHttpActionAdapter;
 import org.pac4j.play.store.PlayCacheSessionStore;
 import org.pac4j.play.store.PlaySessionStore;
 import play.Configuration;
@@ -114,9 +112,11 @@ public class SecurityModule extends AbstractModule {
         );
 
         final Config config = new Config(clients);
-        config.addAuthorizer("admin", new RequireAnyRoleAuthorizer<>("ROLE_ADMIN"));
+//        config.addAuthorizer("admin", new RequireAnyRoleAuthorizer<>("ROLE_ADMIN"));
 //        config.addAuthorizer("custom", new CustomAuthorizer());
-        config.setHttpActionAdapter(new DefaultHttpActionAdapter());
+
+        config.setHttpActionAdapter(new ShipooHttpActionAdapter());
+
         bind(Config.class).toInstance(config);
 
         // callback
