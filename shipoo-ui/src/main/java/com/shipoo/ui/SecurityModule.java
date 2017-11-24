@@ -3,11 +3,12 @@ package com.shipoo.ui;
 //import be.objectify.deadbolt.java.cache.HandlerCache;
 
 import com.google.inject.AbstractModule;
+import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.client.direct.AnonymousClient;
 import org.pac4j.core.config.Config;
 import org.pac4j.http.client.direct.DirectBasicAuthClient;
-import org.pac4j.http.client.direct.ParameterClient;
+import org.pac4j.http.client.direct.HeaderClient;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator;
@@ -95,10 +96,10 @@ public class SecurityModule extends AbstractModule {
         oidcClient.addAuthorizationGenerator((ctx, profile) -> { profile.addRole("ROLE_ADMIN"); return profile; });
 
         // REST authent with JWT for a token passed in the url as the token parameter
-        final ParameterClient parameterClient = new ParameterClient("token",
+        final HeaderClient headerClient = new HeaderClient("token",
                 new JwtAuthenticator(new SecretSignatureConfiguration(JWT_SALT)));
-        parameterClient.setSupportGetRequest(true);
-        parameterClient.setSupportPostRequest(false);
+//        headerClient.setSupportGetRequest(true);
+//        headerClient.setSupportPostRequest(false);
 
         // basic auth
         final DirectBasicAuthClient directBasicAuthClient = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
@@ -106,16 +107,17 @@ public class SecurityModule extends AbstractModule {
         final Clients clients = new Clients(baseUrl + "/callback"
 //                , facebookClient, twitterClient,
 //                formClient, indirectBasicAuthClient, casClient, saml2Client
-                , oidcClient, parameterClient, directBasicAuthClient,
+                , oidcClient, headerClient, directBasicAuthClient,
                 new AnonymousClient()
 //                , casProxyReceptor
         );
 
         final Config config = new Config(clients);
-//        config.addAuthorizer("admin", new RequireAnyRoleAuthorizer<>("ROLE_ADMIN"));
+        config.addAuthorizer("admin", new RequireAnyRoleAuthorizer<>("ROLE_ADMIN"));
 //        config.addAuthorizer("custom", new CustomAuthorizer());
 
         config.setHttpActionAdapter(new ShipooHttpActionAdapter());
+//        config.setHttpActionAdapter(new DefaultHttpActionAdapter());
 
         bind(Config.class).toInstance(config);
 

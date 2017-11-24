@@ -32,6 +32,6 @@ public class GetProfileAction extends Action.Simple  {
     public CommonProfile profile() {
         final PlayWebContext context = new PlayWebContext(ctx(), playSessionStore);
         final ProfileManager<CommonProfile> profileManager = new ProfileManager(context);
-        return profileManager.getAll(false).get(0);
+        return profileManager.getAll(true).get(0);
     }
 }

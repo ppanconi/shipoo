@@ -2,11 +2,12 @@ package com.shipoo.ui.controllers;
 
 import com.example.hello.api.ShipooService;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.ProfileManager;
-import org.pac4j.play.PlayWebContext;
 import org.pac4j.play.java.Secure;
 import org.pac4j.play.store.PlaySessionStore;
-import play.mvc.*;
+import play.libs.concurrent.HttpExecutionContext;
+import play.mvc.Controller;
+import play.mvc.Result;
+import play.mvc.With;
 
 import javax.inject.Inject;
 import java.util.concurrent.CompletableFuture;
@@ -19,10 +20,17 @@ public class Main extends Controller {
 
     private PlaySessionStore playSessionStore;
 
+    private GetProfileAction getProfile;
+
+    private HttpExecutionContext ec;
+
     @Inject
-    public Main(ShipooService shipooService, PlaySessionStore playSessionStore) {
+    public Main(ShipooService shipooService, PlaySessionStore playSessionStore,
+                GetProfileAction getProfile, HttpExecutionContext ec) {
         this.shipooService = shipooService;
         this.playSessionStore = playSessionStore;
+        this.getProfile = getProfile;
+        this.ec = ec;
     }
 
     /**
@@ -33,10 +41,10 @@ public class Main extends Controller {
      */
     @Secure()
     public CompletionStage<Result> index(String path) {
-
-        return shipooService.hello("Dear User").invoke().thenApply( m ->
-            ok(views.html.index.render(m))
-        );
+        CommonProfile user = getProfile.profile();
+        return shipooService.hello("Dear " + user.getFirstName()).invoke().thenApplyAsync( m ->
+                    ok(views.html.index.render(m)
+                ), ec.current());
     }
 
     @Secure(clients = "AnonymousClient")
@@ -44,12 +52,9 @@ public class Main extends Controller {
         return CompletableFuture.completedFuture(ok(views.html.anonymous.render()));
     }
 
-//    @Secure(clients = "OidcClient")
-//    public CompletionStage<Result> app() {
-//
-//        return shipooService.hello("Dear User").invoke().thenApply( m ->
-//                ok(views.html.app.render(m))
-//        );
-//    }
+    @Secure(clients = "OidcClient")
+    public CompletionStage<Result> oidcLogin() {
+        return CompletableFuture.completedFuture(redirect(routes.Main.index("")));
+    }
 
 }

@@ -1,12 +1,16 @@
 
-GET         /anonymous.html                           com.shipoo.ui.controllers.Main.anonymous
+GET         /anonymous.html                      com.shipoo.ui.controllers.Main.anonymous
 
-GET         /                                         com.shipoo.ui.controllers.Main.index(path = "")
-GET         /*path                                    com.shipoo.ui.controllers.Main.index(path)
-#GET         /ui/*path                                com.shipoo.ui.controllers.Main.index
+GET         /                                    com.shipoo.ui.controllers.Main.index(path = "")
+GET         /oidc-login                          com.shipoo.ui.controllers.Main.oidcLogin
+
+GET         /assets/*file                        controllers.Assets.at(path = "/public", file)
+
+GET         /callback                            @org.pac4j.play.CallbackController.callback()
+POST        /callback                            @org.pac4j.play.CallbackController.callback()
+
+GET         /logout                              @org.pac4j.play.LogoutController.logout()
+GET         /centralLogout                       com.shipoo.ui.controllers.CentralLogoutController.logout()
 
 
-GET         /assets/*file                           controllers.Assets.at(path = "/public", file)
-
-GET         /callback                         @org.pac4j.play.CallbackController.callback()
-POST        /callback                         @org.pac4j.play.CallbackController.callback()
+GET         /*path                               com.shipoo.ui.controllers.Main.index(path)
