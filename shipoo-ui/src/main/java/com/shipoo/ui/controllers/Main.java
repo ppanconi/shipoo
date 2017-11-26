@@ -42,7 +42,7 @@ public class Main extends Controller {
     @Secure()
     public CompletionStage<Result> index(String path) {
         CommonProfile user = getProfile.profile();
-        return shipooService.hello("Dear " + user.getFirstName()).invoke().thenApplyAsync( m ->
+        return shipooService.hello(user.getFirstName()).invoke().thenApplyAsync( m ->
                     ok(views.html.index.render(m)
                 ), ec.current());
     }
@@ -54,6 +54,8 @@ public class Main extends Controller {
 
     @Secure(clients = "OidcClient")
     public CompletionStage<Result> oidcLogin() {
+
+
         return CompletableFuture.completedFuture(redirect(routes.Main.index("")));
     }
 

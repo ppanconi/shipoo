@@ -1,8 +1,14 @@
+@import views.Utils
+
 @(greetings: String)
 
 @main("Shipoo") {
 
-    <section id="app">
+    <script>
+            window.profile = @Html(Utils.jsonProfile());
+    </script>
+
+    <div class="container" id="app">
 
         <navbar></navbar>
 
@@ -13,5 +19,5 @@
             </p>
         </div>
 
-    </section>
+    </div>
 }

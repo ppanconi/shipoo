@@ -36,7 +36,7 @@ import play.cache.CacheApi;
 
 public class SecurityModule extends AbstractModule {
 
-    public final static String JWT_SALT = "12345678901234567890123456789012";
+    public final static String JWT_SALT = "Ahhod9vuwnJnxawon87nGRGH7yshw7hs9iwhnshHhsuynauxw8";
 
     private final Configuration configuration;
 

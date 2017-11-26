@@ -4,6 +4,8 @@
 * two arguments, a `String` for the title of the page and an `Html`
 * object to insert into the body of the page.
 *@
+
+@import views.Utils
 @(title: String)(content: Html)
 
 <!DOCTYPE html>
@@ -32,7 +34,7 @@
         <script src="https://unpkg.com/vue-router"></script>
 
         @*custom js*@
-        @if(! ctx().args.get("profile").asInstanceOf[org.pac4j.core.profile.CommonProfile].getId().equals("anonymous") ) {
+        @if(! Utils.isAnonymous() ) {
             <script type="text/javascript" src="@routes.Assets.at("js/navbar-cmp.js")"></script>
             <script type="text/javascript" src="@routes.Assets.at("js/app.js")"></script>
         }
