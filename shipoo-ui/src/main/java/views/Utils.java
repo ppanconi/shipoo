@@ -12,8 +12,6 @@ public class Utils {
 
     private static Logger logger = LoggerFactory.getLogger(Utils.class);
 
-
-
     public static String jsonProfile() throws JsonProcessingException {
         CommonProfile profile = profile();
         ObjectMapper mapper = new ObjectMapper();

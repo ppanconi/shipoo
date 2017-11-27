@@ -7,6 +7,7 @@ import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.client.direct.AnonymousClient;
 import org.pac4j.core.config.Config;
+import org.pac4j.http.client.direct.CookieClient;
 import org.pac4j.http.client.direct.DirectBasicAuthClient;
 import org.pac4j.http.client.direct.HeaderClient;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
@@ -37,6 +38,8 @@ import play.cache.CacheApi;
 public class SecurityModule extends AbstractModule {
 
     public final static String JWT_SALT = "Ahhod9vuwnJnxawon87nGRGH7yshw7hs9iwhnshHhsuynauxw8";
+    public static final String COOKIE_NAME = "shipoo";
+    public static final String HEADER_NAME = "token";
 
     private final Configuration configuration;
 
@@ -96,10 +99,13 @@ public class SecurityModule extends AbstractModule {
         oidcClient.addAuthorizationGenerator((ctx, profile) -> { profile.addRole("ROLE_ADMIN"); return profile; });
 
         // REST authent with JWT for a token passed in the url as the token parameter
-        final HeaderClient headerClient = new HeaderClient("token",
+        final HeaderClient headerClient = new HeaderClient(HEADER_NAME,
                 new JwtAuthenticator(new SecretSignatureConfiguration(JWT_SALT)));
 //        headerClient.setSupportGetRequest(true);
 //        headerClient.setSupportPostRequest(false);
+
+        final CookieClient cookieClient = new CookieClient(COOKIE_NAME,
+                new JwtAuthenticator(new SecretSignatureConfiguration(JWT_SALT)));
 
         // basic auth
         final DirectBasicAuthClient directBasicAuthClient = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
@@ -107,7 +113,7 @@ public class SecurityModule extends AbstractModule {
         final Clients clients = new Clients(baseUrl + "/callback"
 //                , facebookClient, twitterClient,
 //                formClient, indirectBasicAuthClient, casClient, saml2Client
-                , oidcClient, headerClient, directBasicAuthClient,
+                , oidcClient, headerClient, directBasicAuthClient, cookieClient,
                 new AnonymousClient()
 //                , casProxyReceptor
         );

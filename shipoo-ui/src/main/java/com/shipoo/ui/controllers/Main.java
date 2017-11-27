@@ -1,17 +1,24 @@
 package com.shipoo.ui.controllers;
 
 import com.example.hello.api.ShipooService;
+import com.shipoo.ui.SecurityModule;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
+import org.pac4j.jwt.profile.JwtGenerator;
 import org.pac4j.play.java.Secure;
 import org.pac4j.play.store.PlaySessionStore;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.With;
 
 import javax.inject.Inject;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+
+import static com.shipoo.ui.SecurityModule.COOKIE_NAME;
+import static views.Utils.profile;
 
 @With(GetProfileAction.class)
 public class Main extends Controller {
@@ -55,6 +62,12 @@ public class Main extends Controller {
     @Secure(clients = "OidcClient")
     public CompletionStage<Result> oidcLogin() {
 
+        CommonProfile profile = profile();
+
+        final JwtGenerator generator = new JwtGenerator(new SecretSignatureConfiguration(SecurityModule.JWT_SALT));
+        String token = generator.generate(profile);
+
+        response().setCookie(new Http.Cookie(COOKIE_NAME, token, ));
 
         return CompletableFuture.completedFuture(redirect(routes.Main.index("")));
     }
