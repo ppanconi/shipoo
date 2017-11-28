@@ -4,6 +4,7 @@ import com.lightbend.lagom.javadsl.immutable.ImmutableStyle;
 import org.immutables.value.Value;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
+import org.pac4j.core.profile.definition.CommonProfileDefinition;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
@@ -54,7 +55,7 @@ public interface AbstractShipooUiUser extends Serializable {
      * @return the gender of the user
      */
     @Nullable
-    public Gender gender();
+    public String gender();
 
     /**
      * Return the locale of the user.
@@ -62,7 +63,7 @@ public interface AbstractShipooUiUser extends Serializable {
      * @return the locale of the user
      */
     @Nullable
-    public Locale locale();
+    public String locale();
 
     /**
      * Return the url of the picture of the user.
@@ -70,7 +71,7 @@ public interface AbstractShipooUiUser extends Serializable {
      * @return the url of the picture of the user.
      */
     @Nullable
-    public URI pictureUrl();
+    public String pictureUrl();
 
     /**
      * Return the url of the profile of the user.
@@ -78,7 +79,7 @@ public interface AbstractShipooUiUser extends Serializable {
      * @return the url of the profile of the user.
      */
     @Nullable
-    public URI profileUrl();
+    public String profileUrl();
 
     /**
      * Return the location of the user.
@@ -101,11 +102,11 @@ public interface AbstractShipooUiUser extends Serializable {
                 .email(commonProfile.getEmail())
                 .familyName(commonProfile.getFamilyName())
                 .firstName(commonProfile.getFirstName())
-                .gender(commonProfile.getGender())
-                .locale(commonProfile.getLocale())
+                .gender("" + commonProfile.getAttribute(CommonProfileDefinition.GENDER))
+//                .locale("" + commonProfile.getLocale())
                 .location(commonProfile.getLocation())
-                .pictureUrl(commonProfile.getPictureUrl())
-                .profileUrl(commonProfile.getProfileUrl())
+//                .pictureUrl("" + commonProfile.getPictureUrl())
+//                .profileUrl("" + commonProfile.getProfileUrl())
                 .build();
     }
 
