@@ -58,6 +58,7 @@ lazy val `shipoo-ui` = (project in file("shipoo-ui"))
   .settings(
     libraryDependencies ++= Seq(
       lagomJavadslClient,
+      lagomJavadslImmutables,
       "org.pac4j" % "play-pac4j" % "3.0.1",
       "org.pac4j" % "pac4j-http" % "2.0.0",
       cache,

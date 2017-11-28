@@ -2,6 +2,7 @@ package com.shipoo.ui.controllers;
 
 import com.example.hello.api.ShipooService;
 import com.shipoo.ui.SecurityModule;
+import com.shipoo.ui.model.AbstractShipooUiUser;
 import org.pac4j.core.context.Cookie;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
@@ -11,7 +12,6 @@ import org.pac4j.play.java.Secure;
 import org.pac4j.play.store.PlaySessionStore;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
-import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.With;
 
@@ -20,25 +20,24 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import static com.shipoo.ui.SecurityModule.COOKIE_NAME;
-import static views.Utils.profile;
 
-@With(GetProfileAction.class)
+@With(GetShipooUiUserAction.class)
 public class Main extends Controller {
 
     private final ShipooService shipooService;
 
     private PlaySessionStore playSessionStore;
 
-    private GetProfileAction getProfile;
+    private GetShipooUiUserAction userAction;
 
     private HttpExecutionContext ec;
 
     @Inject
     public Main(ShipooService shipooService, PlaySessionStore playSessionStore,
-                GetProfileAction getProfile, HttpExecutionContext ec) {
+                GetShipooUiUserAction userAction, HttpExecutionContext ec) {
         this.shipooService = shipooService;
         this.playSessionStore = playSessionStore;
-        this.getProfile = getProfile;
+        this.userAction = userAction;
         this.ec = ec;
     }
 
@@ -48,10 +47,10 @@ public class Main extends Controller {
      * this method will be called when the application receives a
      * <code>GET</code> request with a path of <code>/</code>.
      */
-    @Secure()
+    @Secure(clients = "CookieClient")
     public CompletionStage<Result> index(String path) {
-        CommonProfile user = getProfile.profile();
-        return shipooService.hello(user.getFirstName()).invoke().thenApplyAsync( m ->
+        AbstractShipooUiUser user = userAction.getUser();
+        return shipooService.hello(user.firstName()).invoke().thenApplyAsync( m ->
                     ok(views.html.index.render(m)
                 ), ec.current());
     }
@@ -65,7 +64,9 @@ public class Main extends Controller {
     public CompletionStage<Result> oidcLogin() {
 
         final PlayWebContext context = new PlayWebContext(ctx(), playSessionStore);
-        CommonProfile profile = profile();
+        CommonProfile profile = userAction.profile();
+
+        profile.removeAttribute("sub");
 
         final JwtGenerator generator = new JwtGenerator(new SecretSignatureConfiguration(SecurityModule.JWT_SALT));
         String token = generator.generate(profile);
@@ -80,7 +81,7 @@ public class Main extends Controller {
         cookie.setDomain(context.getServerName());
         cookie.setHttpOnly(true);
         cookie.setPath("/");
-//        cookie.isSecure() TODO use confing to set true for produciotn
+//        cookie.isSecure() TODO use config to set true for produciotn
         cookie.setMaxAge(3600 * 12);
 
         context.addResponseCookie(cookie);
