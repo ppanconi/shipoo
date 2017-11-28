@@ -38,8 +38,8 @@ import play.cache.CacheApi;
 public class SecurityModule extends AbstractModule {
 
     public final static String JWT_SALT = "Ahhod9vuwnJnxawon87nGRGH7yshw7hs9iwhnshHhsuynauxw8";
-    public static final String COOKIE_NAME = "shipoo";
-    public static final String HEADER_NAME = "token";
+    public static final String COOKIE_NAME = "profile_token";
+    public static final String HEADER_NAME = "profile_token";
 
     private final Configuration configuration;
 

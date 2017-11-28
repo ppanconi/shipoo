@@ -2,9 +2,11 @@ package com.shipoo.ui.controllers;
 
 import com.example.hello.api.ShipooService;
 import com.shipoo.ui.SecurityModule;
+import org.pac4j.core.context.Cookie;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
 import org.pac4j.jwt.profile.JwtGenerator;
+import org.pac4j.play.PlayWebContext;
 import org.pac4j.play.java.Secure;
 import org.pac4j.play.store.PlaySessionStore;
 import play.libs.concurrent.HttpExecutionContext;
@@ -62,14 +64,26 @@ public class Main extends Controller {
     @Secure(clients = "OidcClient")
     public CompletionStage<Result> oidcLogin() {
 
+        final PlayWebContext context = new PlayWebContext(ctx(), playSessionStore);
         CommonProfile profile = profile();
 
         final JwtGenerator generator = new JwtGenerator(new SecretSignatureConfiguration(SecurityModule.JWT_SALT));
         String token = generator.generate(profile);
 
-        response().setCookie(new Http.Cookie(COOKIE_NAME, token, ));
-
+        setProfileTokenCookie(context, token);
         return CompletableFuture.completedFuture(redirect(routes.Main.index("")));
+    }
+
+    private void setProfileTokenCookie(PlayWebContext context, String token) {
+
+        final Cookie cookie = new Cookie(COOKIE_NAME, token);
+        cookie.setDomain(context.getServerName());
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+//        cookie.isSecure() TODO use confing to set true for produciotn
+        cookie.setMaxAge(3600 * 12);
+
+        context.addResponseCookie(cookie);
     }
 
 }
