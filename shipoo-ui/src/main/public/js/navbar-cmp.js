@@ -43,7 +43,7 @@ Vue.component('navbar', {
         <div class="navbar-item has-dropdown is-hoverable">
             
             <a class="navbar-link" href="">
-              {{this.profile.firstName}}
+              {{this.user.firstName}}
             </a>
             <div class="navbar-dropdown is-boxed">
             
@@ -64,7 +64,7 @@ Vue.component('navbar', {
 
     data() {
         return {
-            profile: window.profile
+            user: window.user
         };
     }
 })

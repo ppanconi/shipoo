@@ -10,6 +10,7 @@ import play.mvc.Http;
 import play.mvc.Result;
 
 import javax.inject.Inject;
+import java.util.List;
 import java.util.concurrent.CompletionStage;
 
 import static play.mvc.Controller.ctx;
@@ -34,13 +35,20 @@ public class GetShipooUiUserAction extends Action.Simple  {
 
     public AbstractShipooUiUser getUser() {
         CommonProfile profile = profile();
-        AbstractShipooUiUser user = AbstractShipooUiUser.fromCommonProfile(profile);
-        return user;
+        if (profile != null) {
+            AbstractShipooUiUser user = AbstractShipooUiUser.fromCommonProfile(profile);
+            return user;
+        } else return null;
     }
 
     public CommonProfile profile() {
         final PlayWebContext context = new PlayWebContext(ctx(), playSessionStore);
         final ProfileManager<CommonProfile> profileManager = new ProfileManager(context);
-        return profileManager.getAll(false).get(0);
+        List<CommonProfile> profiles = profileManager.getAll(false);
+        if (profiles.size() == 0){
+            return null;
+        } else {
+            return profiles.get(0);
+        }
     }
 }

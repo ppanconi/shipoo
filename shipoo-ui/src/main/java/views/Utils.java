@@ -15,7 +15,7 @@ public class Utils {
     public static String jsonUser() throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(user());
-        logger.info(json);
+//        logger.info(json);
         return json;
     }
 

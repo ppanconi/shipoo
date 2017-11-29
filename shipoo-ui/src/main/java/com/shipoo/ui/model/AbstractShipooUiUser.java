@@ -1,6 +1,9 @@
 package com.shipoo.ui.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.lightbend.lagom.javadsl.immutable.ImmutableStyle;
+import com.lightbend.lagom.serialization.Jsonable;
 import org.immutables.value.Value;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
@@ -13,7 +16,9 @@ import java.util.Locale;
 
 @Value.Immutable
 @ImmutableStyle
-public interface AbstractShipooUiUser extends Serializable {
+@JsonSerialize(as=ShipooUiUser.class)
+@JsonDeserialize(as=ShipooUiUser.class)
+public interface AbstractShipooUiUser extends Jsonable {
 
     public String id();
 
