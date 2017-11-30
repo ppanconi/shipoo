@@ -1,18 +1,16 @@
 package com.shipoo.ui.model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.lightbend.lagom.javadsl.immutable.ImmutableStyle;
 import com.lightbend.lagom.serialization.Jsonable;
 import org.immutables.value.Value;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 
 import javax.annotation.Nullable;
-import java.io.Serializable;
-import java.net.URI;
-import java.util.Locale;
 
 @Value.Immutable
 @ImmutableStyle
@@ -96,6 +94,12 @@ public interface AbstractShipooUiUser extends Jsonable {
 
     default boolean isAnonymous() {
         return id().equals("anonymous");
+    }
+
+    default String asJason() throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(this);
+        return json;
     }
 
     static AbstractShipooUiUser fromCommonProfile(CommonProfile commonProfile) {

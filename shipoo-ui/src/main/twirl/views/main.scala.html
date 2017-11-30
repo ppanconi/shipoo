@@ -5,8 +5,7 @@
 * object to insert into the body of the page.
 *@
 
-@import views.Utils
-@(title: String)(content: Html)
+@(title: String, user: com.shipoo.ui.model.AbstractShipooUiUser)(content: Html)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -32,10 +31,12 @@
         @*TODO temp fast solution move to a production one valuate to use the webpack play plugin *@
         <script src="https://unpkg.com/vue"></script>
         <script src="https://unpkg.com/vue-router"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
         @*custom js*@
-        @if(! Utils.isAnonymous() ) {
+        @if(! user.isAnonymous() ) {
             <script type="text/javascript" src="@routes.Assets.at("js/navbar-cmp.js")"></script>
+            <script type="text/javascript" src="@routes.Assets.at("js/tenant-cmp.js")"></script>
             <script type="text/javascript" src="@routes.Assets.at("js/app.js")"></script>
         }
     </body>

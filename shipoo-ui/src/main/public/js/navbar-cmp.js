@@ -33,7 +33,7 @@ Vue.component('navbar', {
               <hr class="navbar-divider">
               
               <a class="navbar-item" href="#">
-                Create new
+                 <router-link to="/tenant">Create new</router-link>
               </a>
             </div>
         </div>

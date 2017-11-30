@@ -1,22 +1,21 @@
-@import views.Utils
+@(greetings: String, user: com.shipoo.ui.model.AbstractShipooUiUser)
 
-@(greetings: String)
-
-@main("Shipoo") {
+@main("Shipoo", user) {
 
     <script>
-            window.user = @Html(Utils.jsonUser());
+            window.user = @Html(user.asJason());
     </script>
 
     <div class="container" id="app">
 
         <navbar></navbar>
 
-        <div class="container">
+        <p class="subtitle">
+            <strong>@greetings</strong>!
+        </p>
 
-            <p class="subtitle">
-                <strong>@greetings</strong>!
-            </p>
+        <div class="container">
+            <router-view></router-view>
         </div>
 
     </div>

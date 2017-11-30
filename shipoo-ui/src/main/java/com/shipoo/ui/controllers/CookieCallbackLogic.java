@@ -1,11 +1,10 @@
 package com.shipoo.ui.controllers;
 
 import org.pac4j.core.config.Config;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.engine.DefaultCallbackLogic;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.play.PlayWebContext;
-import play.api.mvc.Result;
+import play.mvc.Result;
 
 public class CookieCallbackLogic extends DefaultCallbackLogic<Result, PlayWebContext> {
 

@@ -23,6 +23,10 @@ public class Utils {
     }
 
     static public void saveProfileToCookie(PlayWebContext context, CommonProfile profile) {
+
+        if (profile.getAttribute("sub") != null) {
+            profile.removeAttribute("sub");
+        }
         final JwtGenerator generator = new JwtGenerator(new SecretSignatureConfiguration(SecurityModule.JWT_SALT));
         String token = generator.generate(profile);
 
