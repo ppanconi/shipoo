@@ -3,7 +3,6 @@ package com.shipoo.ui.controllers;
 import com.example.hello.api.ShipooService;
 import com.shipoo.ui.SecurityModule;
 import com.shipoo.ui.model.AbstractShipooUiUser;
-import org.pac4j.core.context.Cookie;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
 import org.pac4j.jwt.profile.JwtGenerator;
@@ -18,8 +17,6 @@ import play.mvc.With;
 import javax.inject.Inject;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-
-import static com.shipoo.ui.SecurityModule.COOKIE_NAME;
 
 @With(GetShipooUiUserAction.class)
 public class Main extends Controller {
@@ -71,20 +68,8 @@ public class Main extends Controller {
         final JwtGenerator generator = new JwtGenerator(new SecretSignatureConfiguration(SecurityModule.JWT_SALT));
         String token = generator.generate(profile);
 
-        setProfileTokenCookie(context, token);
+        Utils.saveProfileTokenCookie(context, token);
         return CompletableFuture.completedFuture(redirect(routes.Main.index("")));
-    }
-
-    private void setProfileTokenCookie(PlayWebContext context, String token) {
-
-        final Cookie cookie = new Cookie(COOKIE_NAME, token);
-        cookie.setDomain(context.getServerName());
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-//        cookie.isSecure() TODO use config to set true for produciotn
-        cookie.setMaxAge(3600 * 12);
-
-        context.addResponseCookie(cookie);
     }
 
 }

@@ -35,20 +35,14 @@ public class GetShipooUiUserAction extends Action.Simple  {
 
     public AbstractShipooUiUser getUser() {
         CommonProfile profile = profile();
-        if (profile != null) {
-            AbstractShipooUiUser user = AbstractShipooUiUser.fromCommonProfile(profile);
-            return user;
-        } else return null;
+        AbstractShipooUiUser user = AbstractShipooUiUser.fromCommonProfile(profile);
+        return user;
     }
 
     public CommonProfile profile() {
         final PlayWebContext context = new PlayWebContext(ctx(), playSessionStore);
         final ProfileManager<CommonProfile> profileManager = new ProfileManager(context);
-        List<CommonProfile> profiles = profileManager.getAll(false);
-        if (profiles.size() == 0){
-            return null;
-        } else {
-            return profiles.get(0);
-        }
+        List<CommonProfile> profiles = profileManager.getAll(true);
+        return profiles.get(0);
     }
 }
