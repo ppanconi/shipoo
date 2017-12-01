@@ -4,8 +4,37 @@ const router = new VueRouter({
     ]
 });
 
+let http_client = {
+
+    data() {
+        return {
+            HTTP: axios.create({
+                baseURL: '/uiapi',
+                headers: {
+                    Authorization: 'Bearer {token}'
+                }
+            })
+        }
+    }
+
+});
+
 
 const app = new Vue({
     router: router,
-    el: '#app'
+    el: '#app',
+
+    data : {
+      client: client
+    }
+
 })
+
+const HTTP = axios.create({
+    baseURL: '/uiapi',
+    headers: {
+        Authorization: 'Bearer {token}'
+    }
+})
+
+

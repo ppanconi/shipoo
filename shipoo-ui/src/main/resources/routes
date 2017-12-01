@@ -12,5 +12,7 @@ POST        /callback                            com.shipoo.ui.controllers.Cooki
 GET         /logout                              @org.pac4j.play.LogoutController.logout()
 GET         /centralLogout                       com.shipoo.ui.controllers.CentralLogoutController.logout()
 
+POST        /uiapi/tenant                        com.shipoo.ui.controllers.api.TenantController.create()
+
 
 GET         /*path                               com.shipoo.ui.controllers.Main.index(path)
