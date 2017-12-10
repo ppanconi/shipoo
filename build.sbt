@@ -5,7 +5,40 @@ version in ThisBuild := "1.0-SNAPSHOT"
 scalaVersion in ThisBuild := "2.11.8"
 
 lazy val `shipoo` = (project in file("."))
-  .aggregate(`shipoo-api`, `shipoo-impl`, `shipoo-stream-api`, `shipoo-stream-impl`, `shipoo-ui`)
+  .aggregate(`shipoo-test-utils`, `shipoo-api`, `shipoo-impl`, `shipoo-user-api`, `shipoo-user-impl`,
+      `shipoo-stream-api`, `shipoo-stream-impl`, `shipoo-ui`)
+
+lazy val `shipoo-test-utils` = (project in file("shipoo-test-utils"))
+  .settings(common: _*)
+  .settings(
+    libraryDependencies ++= Seq(
+      lagomJavadslApi,
+      lagomJavadslPersistenceCassandra
+    )
+  )
+
+lazy val `shipoo-user-api` = (project in file("shipoo-user-api"))
+  .settings(common: _*)
+  .settings(
+    libraryDependencies ++= Seq(
+      lagomJavadslApi,
+      lombok
+    )
+  )
+
+lazy val `shipoo-user-impl` = (project in file("shipoo-user-impl"))
+  .enablePlugins(LagomJava)
+  .settings(common: _*)
+  .settings(
+    libraryDependencies ++= Seq(
+      lagomJavadslPersistenceCassandra,
+      lagomJavadslKafkaBroker,
+      lagomJavadslTestKit,
+      lombok
+    )
+  )
+  .settings(lagomForkedTestSettings: _*)
+  .dependsOn(`shipoo-test-utils`, `shipoo-user-api`)
 
 lazy val `shipoo-api` = (project in file("shipoo-api"))
   .settings(common: _*)
@@ -77,3 +110,5 @@ def common = Seq(
   javacOptions in compile += "-parameters"
 )
 
+import scala.concurrent.duration._ // Mind that the import is needed.
+lagomCassandraMaxBootWaitingTime in ThisBuild := 100.seconds
