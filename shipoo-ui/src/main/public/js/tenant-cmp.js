@@ -19,7 +19,7 @@ const tenant = Vue.component('tenant', {
     methods: {
         create() {
             debugger;
-            this.$root.client.HTTP.post('/tenant', this.tenant
+            this.$root.HTTP.post('/tenant', this.tenant
             ).then(response => {
                 alert(response)
             }).catch(e => {
