@@ -32,7 +32,7 @@ public interface PShipooTenantCommand extends Jsonable {
     }
 
     @Value
-    final class AddTenantMember
+    final class PutTenantMember
         implements PShipooTenantCommand, PersistentEntity.ReplyType<Optional<ShipooTenantMember>> {
         UUID commander;
         UUID member;
