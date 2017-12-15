@@ -1,13 +1,14 @@
 package com.shipoo.tenant.impl;
 
 
-import com.lightbend.lagom.javadsl.persistence.PersistentEntity;
-import com.lightbend.lagom.javadsl.persistence.PersistentEntity.CommandContext;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.lightbend.lagom.javadsl.persistence.PersistentEntity.Persist;
 import com.lightbend.lagom.serialization.Jsonable;
+import lombok.Builder;
 import lombok.Value;
 import org.pcollections.PMap;
 
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,6 +20,15 @@ import static com.shipoo.tenant.impl.ShipooTenantRole.MANAGER;
 
 @Value
 public class PShipooTenantState implements Jsonable {
+
+    @JsonCreator
+    @Builder(toBuilder = true)
+    public PShipooTenantState(UUID id, UUID creator, ShipooTenantUserData tenant, PMap<UUID, ShipooTenantMember> members) {
+        this.id = id;
+        this.creator = creator;
+        this.tenant = tenant;
+        this.members = members;
+    }
 
     /**
      * The tenant id.
@@ -45,8 +55,8 @@ public class PShipooTenantState implements Jsonable {
     /**
      * Verify command and persist the event the TenantMenber when the command is ok
      */
-    public Persist acceptPutTenantMenberEvent(PutTenantMember cmd,
-                                              PShipooTenantEntity.CommandContext<ShipooTenantMember> ctx) {
+    public Persist acceptPutTenantMemberCommand(PutTenantMember cmd,
+                                                PShipooTenantEntity.CommandContext<Optional<CommandReply.Done>> ctx) {
 
         ShipooTenantMember commander = members.get(cmd.getCommander());
         if (commander != null || commander.getRole() != MANAGER || commander.getRole() != CREATOR) {
@@ -63,8 +73,24 @@ public class PShipooTenantState implements Jsonable {
             return ctx.done();
         }
 
-        TenantMemberPutted event = new TenantMemberPutted(commander.getUser(), member);
+        TenantMemberPutted event = TenantMemberPutted.builder()
+                .id(UUID.randomUUID())
+                .timestamp(Instant.now())
+                .commander(commander.getUser())
+                .memberPutted(member)
+                .build();
 
-        return ctx.thenPersist(event, e -> ctx.reply(member));
+
+        return ctx.thenPersist(event, e -> ctx.reply(
+                Optional.of(CommandReply.Done.builder().
+                        id(event.id)
+                        .timestamp(event.timestamp)
+                        .build()))
+        );
+
+    }
+
+    public PShipooTenantState applyTenantMemberPuttedEvent(TenantMemberPutted event) {
+        return this.toBuilder().members(members.plus(event.getMemberPutted().getUser(), event.getMemberPutted())).build();
     }
 }

@@ -1,6 +1,5 @@
 package com.shipoo.tenant.impl;
 
-import akka.Done;
 import com.lightbend.lagom.javadsl.persistence.PersistentEntity;
 import com.lightbend.lagom.serialization.Jsonable;
 import lombok.Value;
@@ -12,7 +11,7 @@ public interface PShipooTenantCommand extends Jsonable {
 
     @Value
     final class CreateTenant
-            implements PShipooTenantCommand, PersistentEntity.ReplyType<Done> {
+            implements PShipooTenantCommand, PersistentEntity.ReplyType<CommandReply.Done> {
         ShipooTenantUserData tenantData;
         UUID id;
         UUID creator;
@@ -26,14 +25,14 @@ public interface PShipooTenantCommand extends Jsonable {
 
     @Value
     final class UpdateTenant
-        implements PShipooTenantCommand, PersistentEntity.ReplyType<Optional<PShipooTenantState>> {
+        implements PShipooTenantCommand, PersistentEntity.ReplyType<Optional<CommandReply.Done>> {
         UUID commander;
         ShipooTenantUserData tenantData;
     }
 
     @Value
     final class PutTenantMember
-        implements PShipooTenantCommand, PersistentEntity.ReplyType<Optional<ShipooTenantMember>> {
+        implements PShipooTenantCommand, PersistentEntity.ReplyType<Optional<CommandReply.Done>> {
         UUID commander;
         UUID member;
         ShipooTenantRole role;
@@ -41,7 +40,7 @@ public interface PShipooTenantCommand extends Jsonable {
 
     @Value
     final class RemoveTenantMember
-            implements PShipooTenantCommand, PersistentEntity.ReplyType<Optional<ShipooTenantMember>> {
+            implements PShipooTenantCommand, PersistentEntity.ReplyType<Optional<CommandReply.Done>> {
         UUID commander;
         UUID member;
     }
