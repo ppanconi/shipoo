@@ -41,9 +41,9 @@ public interface PShipooTenantEvent extends Jsonable, AggregateEvent<PShipooTena
      * Event of member added to tenant
      */
     @Value
-    class TenantMemberAdded implements PShipooTenantEvent {
+    class TenantMemberPutted implements PShipooTenantEvent {
         UUID commander;
-        ShipooTenantMember memberAdded;
+        ShipooTenantMember memberPutted;
     }
 
     /**
