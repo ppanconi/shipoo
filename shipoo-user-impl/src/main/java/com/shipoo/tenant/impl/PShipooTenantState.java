@@ -23,10 +23,10 @@ public class PShipooTenantState implements Jsonable {
 
     @JsonCreator
     @Builder(toBuilder = true)
-    public PShipooTenantState(UUID id, UUID creator, ShipooTenantUserData tenant, PMap<UUID, ShipooTenantMember> members) {
+    public PShipooTenantState(UUID id, UUID creator, ShipooTenantUserData tenantData, PMap<UUID, ShipooTenantMember> members) {
         this.id = id;
         this.creator = creator;
-        this.tenant = tenant;
+        this.tenantData = tenantData;
         this.members = members;
     }
 
@@ -44,7 +44,7 @@ public class PShipooTenantState implements Jsonable {
      * The tenant date that the user can provides at creation time
      * or during update
      */
-    private final ShipooTenantUserData tenant;
+    private final ShipooTenantUserData tenantData;
 
     /**
      * The collection of members of this tenant
@@ -59,7 +59,7 @@ public class PShipooTenantState implements Jsonable {
                                                 PShipooTenantEntity.CommandContext<Optional<CommandReply.Done>> ctx) {
 
         ShipooTenantMember commander = members.get(cmd.getCommander());
-        if (commander != null || commander.getRole() != MANAGER || commander.getRole() != CREATOR) {
+        if (commander == null || (commander.getRole() != MANAGER && commander.getRole() != CREATOR )) {
             ctx.commandFailed(USER_CANT_PUT_MEMBER);
             return ctx.done();
         }
@@ -70,6 +70,7 @@ public class PShipooTenantState implements Jsonable {
 
         if (eventualPreset != null && eventualPreset.equals(member)) {
             // when the putted and current are equal there's no need to emit an event.
+            // TODO use the Replay with the right code
             return ctx.done();
         }
 
@@ -80,14 +81,12 @@ public class PShipooTenantState implements Jsonable {
                 .memberPutted(member)
                 .build();
 
-
         return ctx.thenPersist(event, e -> ctx.reply(
-                Optional.of(CommandReply.Done.builder().
-                        id(event.id)
-                        .timestamp(event.timestamp)
-                        .build()))
-        );
-
+                Optional.of(CommandReply.Done.builder()
+                        .id(event.getId())
+                        .timestamp(event.getTimestamp())
+                        .build())
+        ));
     }
 
     public PShipooTenantState applyTenantMemberPuttedEvent(TenantMemberPutted event) {

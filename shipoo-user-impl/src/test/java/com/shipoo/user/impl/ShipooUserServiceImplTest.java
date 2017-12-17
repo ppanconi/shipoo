@@ -1,5 +1,6 @@
 package com.shipoo.user.impl;
 
+import com.lightbend.lagom.javadsl.api.transport.NotFound;
 import com.shipoo.test.Await;
 import com.shipoo.user.ShipooUserService;
 import com.shipoo.user.vo.ShipooUser;
@@ -58,14 +59,19 @@ public class ShipooUserServiceImplTest {
         });
     }
 
-    @Test
+    @Test(expected = com.lightbend.lagom.javadsl.api.transport.NotFound.class)
     public void getNoCreatedUser() throws Exception {
 
+        UUID userId = UUID.randomUUID();
         withServer(defaultSetup().withCassandra(true), server -> {
             service = server.client(ShipooUserService.class);
-            ShipooUser user = getUser(UUID.randomUUID());
-            assertUser(user);
-
+            try {
+                ShipooUser user = getUser(userId);
+            } catch (RuntimeException ex) {
+                NotFound notFound = (NotFound) ex.getCause();
+                assertEquals("Item " + userId + " not found", notFound.getMessage());
+                throw  notFound;
+            }
         });
     }
 

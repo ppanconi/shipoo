@@ -39,6 +39,10 @@ public interface PShipooTenantEvent extends Jsonable, AggregateEvent<PShipooTena
             this.tenant = tenant;
         }
 
+        @Override
+        public String toString() {
+            return super.toString() + "TenantCreated{tenant=" + tenant.toString() + "}";
+        }
     }
 
     /**
@@ -62,7 +66,7 @@ public interface PShipooTenantEvent extends Jsonable, AggregateEvent<PShipooTena
     /**
      * Event of member added to tenant
      */
-    @Value(staticConstructor="of")
+    @Value
     @EqualsAndHashCode(callSuper=true)
     class TenantMemberPutted extends BaseEvent implements PShipooTenantEvent {
         UUID commander;
@@ -80,7 +84,7 @@ public interface PShipooTenantEvent extends Jsonable, AggregateEvent<PShipooTena
     /**
      * Event of member added to tenant
      */
-    @Value(staticConstructor="of")
+    @Value
     @EqualsAndHashCode(callSuper=true)
     class TenantMemberRemoved extends BaseEvent implements PShipooTenantEvent {
         UUID commander;
