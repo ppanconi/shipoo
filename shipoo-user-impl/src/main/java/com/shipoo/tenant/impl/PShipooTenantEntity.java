@@ -117,7 +117,11 @@ public class PShipooTenantEntity
         b.setCommandHandler(RemoveTenantMember.class, ( cmd, ctx) -> {
             assert state().isPresent();
             return state().get().acceptRemoveTenantMemberCommand(cmd, ctx);
+        });
 
+        b.setEventHandler(PShipooTenantEvent.TenantMemberRemoved.class, event -> {
+            assert state().isPresent();
+            return Optional.of(state().get().applyTenantMemberRemovedEvent(event));
         });
 
 

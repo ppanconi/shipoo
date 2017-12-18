@@ -6,14 +6,11 @@ import com.lightbend.lagom.javadsl.testkit.PersistentEntityTestDriver;
 import org.junit.*;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static com.shipoo.tenant.impl.ShipooTenantException.USER_CANT_PUT_MEMBER;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class PShipooTenantEntityTest {
 
@@ -126,5 +123,30 @@ public class PShipooTenantEntityTest {
 
         return driver.run(cmd);
     }
+
+    @Test
+    public void testRemoveMember() {
+
+        PShipooTenantEvent.TenantCreated event = createTenant();
+
+        UUID commander = event.getTenant().getCreator();
+
+        PersistentEntityTestDriver.Outcome<PShipooTenantEvent, Optional<PShipooTenantState>> outcome = removeMember(commander, UUID.randomUUID());
+
+        assertTrue(outcome.getReplies().size() == 1);
+
+        Optional<CommandReply> replay = (Optional<CommandReply>) outcome.getReplies().get(0);
+        assert replay.isPresent();
+    }
+
+    private PersistentEntityTestDriver.Outcome<PShipooTenantEvent, Optional<PShipooTenantState>> removeMember(UUID commander, UUID member) {
+        PShipooTenantCommand.RemoveTenantMember cmd = PShipooTenantCommand.RemoveTenantMember.builder()
+                .commander(commander)
+                .member(member)
+                .build();
+
+        return driver.run(cmd);
+    }
+
 
 }

@@ -107,4 +107,15 @@ public abstract class CommandReply<D> implements Jsonable {
         }
     }
 
+    @Value
+    @EqualsAndHashCode(callSuper=true)
+    public static class NowDone extends CommandReply<Void> {
+
+        @JsonCreator
+        @Builder
+        public NowDone() {
+            super(UUID.randomUUID(), Instant.now(), 0, "Command accepted", Optional.empty());
+        }
+    }
+
 }

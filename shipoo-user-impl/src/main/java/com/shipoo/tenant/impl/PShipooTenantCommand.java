@@ -13,7 +13,7 @@ public interface PShipooTenantCommand extends Jsonable {
 
     @Value
     final class CreateTenant
-            implements PShipooTenantCommand, PersistentEntity.ReplyType<CommandReply.Done> {
+            implements PShipooTenantCommand, PersistentEntity.ReplyType<CommandReply> {
         ShipooTenantUserData tenantData;
         UUID id;
         UUID creator;
@@ -41,7 +41,7 @@ public interface PShipooTenantCommand extends Jsonable {
 
     @Value
     final class UpdateTenant
-        implements PShipooTenantCommand, PersistentEntity.ReplyType<Optional<CommandReply.Done>> {
+        implements PShipooTenantCommand, PersistentEntity.ReplyType<Optional<CommandReply>> {
         UUID commander;
         ShipooTenantUserData tenantData;
 
@@ -55,7 +55,7 @@ public interface PShipooTenantCommand extends Jsonable {
 
     @Value
     final class PutTenantMember
-        implements PShipooTenantCommand, PersistentEntity.ReplyType<Optional<CommandReply.Done>> {
+        implements PShipooTenantCommand, PersistentEntity.ReplyType<Optional<CommandReply>> {
         UUID commander;
         UUID member;
         ShipooTenantRole role;
@@ -71,7 +71,7 @@ public interface PShipooTenantCommand extends Jsonable {
 
     @Value
     final class RemoveTenantMember
-            implements PShipooTenantCommand, PersistentEntity.ReplyType<Optional<CommandReply.Done>> {
+            implements PShipooTenantCommand, PersistentEntity.ReplyType<Optional<CommandReply>> {
         UUID commander;
         UUID member;
 
