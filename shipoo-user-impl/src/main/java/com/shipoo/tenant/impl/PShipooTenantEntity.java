@@ -111,10 +111,13 @@ public class PShipooTenantEntity
         });
 
 
-
+        /**
+         * Remove Tenant
+         */
         b.setCommandHandler(RemoveTenantMember.class, ( cmd, ctx) -> {
-            ctx.commandFailed(new EntityNotFound(entityId()));
-            return ctx.done();
+            assert state().isPresent();
+            return state().get().acceptRemoveTenantMemberCommand(cmd, ctx);
+
         });
 
 

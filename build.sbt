@@ -26,7 +26,7 @@ lazy val `shipoo-user-api` = (project in file("shipoo-user-api"))
     )
   )
 
-lazy val `shipoo-user-impl` = (project in file("shipoo-:user-impl"))
+lazy val `shipoo-user-impl` = (project in file("shipoo-user-impl"))
   .enablePlugins(LagomJava)
   .settings(common: _*)
   .settings(

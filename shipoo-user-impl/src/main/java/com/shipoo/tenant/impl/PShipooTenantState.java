@@ -2,6 +2,7 @@ package com.shipoo.tenant.impl;
 
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.lightbend.lagom.javadsl.persistence.PersistentEntity;
 import com.lightbend.lagom.javadsl.persistence.PersistentEntity.Persist;
 import com.lightbend.lagom.serialization.Jsonable;
 import lombok.Builder;
@@ -52,6 +53,10 @@ public class PShipooTenantState implements Jsonable {
     private final PMap<UUID, ShipooTenantMember> members;
 
 
+    public PShipooTenantState applyTenantMemberPuttedEvent(TenantMemberPutted event) {
+        return this.toBuilder().members(members.plus(event.getMemberPutted().getUser(), event.getMemberPutted())).build();
+    }
+
     /**
      * Verify command and persist the event the TenantMenber when the command is ok
      */
@@ -59,7 +64,7 @@ public class PShipooTenantState implements Jsonable {
                                                 PShipooTenantEntity.CommandContext<Optional<CommandReply.Done>> ctx) {
 
         ShipooTenantMember commander = members.get(cmd.getCommander());
-        if (commander == null || (commander.getRole() != MANAGER && commander.getRole() != CREATOR )) {
+        if (!verifyCommander(commander)) {
             ctx.commandFailed(USER_CANT_PUT_MEMBER);
             return ctx.done();
         }
@@ -89,7 +94,20 @@ public class PShipooTenantState implements Jsonable {
         ));
     }
 
-    public PShipooTenantState applyTenantMemberPuttedEvent(TenantMemberPutted event) {
-        return this.toBuilder().members(members.plus(event.getMemberPutted().getUser(), event.getMemberPutted())).build();
+    private boolean verifyCommander(ShipooTenantMember commander) {
+        if (commander == null || (commander.getRole() != MANAGER && commander.getRole() != CREATOR )) {
+            return false;
+        }
+        return true;
+    }
+
+    public Persist acceptRemoveTenantMemberCommand(PShipooTenantCommand.RemoveTenantMember cmd,
+                                                   PShipooTenantEntity.CommandContext<Optional<CommandReply.Done>>  ctx) {
+
+        ShipooTenantMember commander = members.get(cmd.getCommander());
+        if ( !verifyCommander(commander) && cmd.getCommander() != cmd.getMember() ) {
+            ctx.commandFailed(USER_CANT_PUT_MEMBER);
+            return ctx.done();
+        }
     }
 }
