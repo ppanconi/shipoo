@@ -98,7 +98,7 @@ public class PShipooTenantEntity
         b.setReadOnlyCommandHandler(GetTenant.class, this::getState);
 
         /**
-         * PutMember
+         * Put Tenant Member
          */
         b.setCommandHandler(PutTenantMember.class, (cmd, ctx) -> {
             assert state().isPresent();
@@ -112,7 +112,7 @@ public class PShipooTenantEntity
 
 
         /**
-         * Remove Tenant
+         * Remove Tenant Member
          */
         b.setCommandHandler(RemoveTenantMember.class, ( cmd, ctx) -> {
             assert state().isPresent();

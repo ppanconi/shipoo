@@ -5,8 +5,16 @@ version in ThisBuild := "1.0-SNAPSHOT"
 scalaVersion in ThisBuild := "2.11.8"
 
 lazy val `shipoo` = (project in file("."))
-  .aggregate(`shipoo-test-utils`, `shipoo-api`, `shipoo-impl`, `shipoo-user-api`, `shipoo-user-impl`,
-      `shipoo-stream-api`, `shipoo-stream-impl`, `shipoo-ui`)
+  .aggregate(
+    `shipoo-test-utils`,
+    `shipoo-security`,
+    `shipoo-api`,
+    `shipoo-impl`,
+    `shipoo-user-api`,
+    `shipoo-user-impl`,
+    `shipoo-stream-api`,
+    `shipoo-stream-impl`,
+    `shipoo-ui`)
 
 lazy val `shipoo-test-utils` = (project in file("shipoo-test-utils"))
   .settings(common: _*)
@@ -14,6 +22,16 @@ lazy val `shipoo-test-utils` = (project in file("shipoo-test-utils"))
     libraryDependencies ++= Seq(
       lagomJavadslApi,
       lagomJavadslPersistenceCassandra
+    )
+  )
+
+lazy val `shipoo-security` = (project in file("shipoo-security"))
+  .settings(common: _*)
+  .settings(
+    libraryDependencies ++= Seq(
+      lagomJavadslApi,
+      lagomJavadslServer % Optional,
+      lombok
     )
   )
 
@@ -38,7 +56,7 @@ lazy val `shipoo-user-impl` = (project in file("shipoo-user-impl"))
     )
   )
   .settings(lagomForkedTestSettings: _*)
-  .dependsOn(`shipoo-test-utils`, `shipoo-user-api`)
+  .dependsOn(`shipoo-test-utils`, `shipoo-security`, `shipoo-user-api`)
 
 lazy val `shipoo-api` = (project in file("shipoo-api"))
   .settings(common: _*)
